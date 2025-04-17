@@ -60,7 +60,7 @@ function ShiftSignupForm() {
                     <option value="12pm-6pm">12:00 pm to 6:00 pm</option>                  
                 </select>
             <p>By creating an account you agree to your <a href="#">Terms & Privacy</a></p>
-            <button type="button" className="cancrelBtn" onClick={handleCancel}>Cancel</button>
+            <button type="button" className="cancelBtn" onClick={handleCancel}>Cancel</button>
             <button type="submit">Sign Up</button>
         </form>
     )
