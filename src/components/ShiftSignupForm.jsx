@@ -55,8 +55,8 @@ function ShiftSignupForm() {
             length: "6am-12pm"
           });
         } catch (err) {
-          console.error("Error adding shift:", err);
-          alert("Something went wrong. Try again.");
+            console.error("Error adding shift:", err.message);
+            alert("Something went wrong. Check the console for details.");
         }
     };
 
