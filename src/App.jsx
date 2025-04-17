@@ -1,8 +1,11 @@
 import React from 'react'
+import ShiftSignupForm from './components/ShiftSignupForm'
 
 const App = () => {
   return (
-    <div>blazeShift App</div>
+    <div className="App">
+      <ShiftSignupForm />
+    </div>
   )
 }
 
