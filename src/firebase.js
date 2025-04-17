@@ -2,15 +2,14 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
-// 🔐 Paste your config object from Step 2 below
 const firebaseConfig = {
-  apiKey: "your_api_key",
-  authDomain: "your_auth_domain",
-  projectId: "your_project_id",
-  storageBucket: "your_bucket",
-  messagingSenderId: "your_msg_sender_id",
-  appId: "your_app_id",
-};
+    apiKey: "AIzaSyBravNT6hugMJmttdZNtfmIQLz8gfqgfb0",
+    authDomain: "blazeshiftapp.firebaseapp.com",
+    projectId: "blazeshiftapp",
+    storageBucket: "blazeshiftapp.firebasestorage.app",
+    messagingSenderId: "458611007306",
+    appId: "1:458611007306:web:85343d07173440737d6bb3"
+  };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
