@@ -1,5 +1,9 @@
 import React from 'react'
 import { useState } from "react"
+import { db } from "../firebase";
+import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+
+
 
 function ShiftSignupForm() {
     const [formData, setFormData] = useState({
@@ -17,19 +21,44 @@ function ShiftSignupForm() {
         }))
     }
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        console.log("Form submitted: ", formData)
-
-        // todo send data to firebase here
-
-        setFormData({
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+      
+        try {
+          // Check if shift already has 3 signups
+          const q = query(
+            collection(db, "shifts"),
+            where("date", "==", formData.date),
+            where("block", "==", formData.length)
+          );
+          const querySnapshot = await getDocs(q);
+      
+          if (querySnapshot.size >= 3) {
+            alert("This shift is already full (3 signups).");
+            return;
+          }
+      
+          // Add the new shift signup to Firestore
+          await addDoc(collection(db, "shifts"), {
+            name: formData.name,
+            phone: formData.phone,
+            date: formData.date,
+            block: formData.length,
+            timestamp: Date.now(),
+          });
+      
+          alert("Shift signup successful!");
+          setFormData({
             name: "",
             phone: "",
             date: "",
-            shiftBlock: "6am-6pm"
-        })
-    }
+            length: "6am-12pm"
+          });
+        } catch (err) {
+          console.error("Error adding shift:", err);
+          alert("Something went wrong. Try again.");
+        }
+    };
 
     const handleCancel = () => {
         setFormData({
