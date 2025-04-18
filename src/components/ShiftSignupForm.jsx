@@ -10,7 +10,7 @@ function ShiftSignupForm() {
         name: "",
         phone: "",
         date: "",
-        block: "6am-6pm", // full day default
+        block: "6am-6pm" // full day default
     })
 
     const handleChange = (e) => {
@@ -24,41 +24,51 @@ function ShiftSignupForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
       
+        console.log("Querying for:");
+        console.log("Date:", formData.date.trim());
+        console.log("Block:", formData.block.trim().toLowerCase());
+      
         try {
-          // Check if shift already has 3 signups
+          // Check if this shift already has 3 signups
           const q = query(
             collection(db, "shifts"),
-            where("date", "==", formData.date),
-            where("block", "==", formData.block)
+            where("date", "==", formData.date.trim()),
+            where("block", "==", formData.block.trim().toLowerCase())
           );
+      
           const querySnapshot = await getDocs(q);
+          console.log("Matched shifts:", querySnapshot.size);
       
           if (querySnapshot.size >= 3) {
-            alert("This shift is already full (3 signups).");
+            alert("This shift is already full.");
             return;
           }
       
-          // Add the new shift signup to Firestore
+          // Add new shift to Firestore
           await addDoc(collection(db, "shifts"), {
             name: formData.name,
             phone: formData.phone,
-            date: formData.date,
-            block: formData.block,
-            timestamp: Date.now(),
+            date: formData.date.trim(),
+            block: formData.block.trim().toLowerCase(),
+            timestamp: Date.now()
           });
       
           alert("Shift signup successful!");
+      
+          // Reset the form
           setFormData({
             name: "",
             phone: "",
             date: "",
-            block: "6am-12pm"
+            block: "6am-6pm"
           });
+      
         } catch (err) {
-            console.error("Error adding shift:", err.message);
-            alert("Something went wrong. Check the console for details.");
+          console.error("Error adding shift:", err.message);
+          alert("Something went wrong. Check the console.");
         }
-    };
+      };
+      
 
     const handleCancel = () => {
         setFormData({
