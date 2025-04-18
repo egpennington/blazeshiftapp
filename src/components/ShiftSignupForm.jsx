@@ -10,7 +10,7 @@ function ShiftSignupForm() {
         name: "",
         phone: "",
         date: "",
-        shiftBlock: "6am-6pm", // full day default
+        block: "6am-6pm", // full day default
     })
 
     const handleChange = (e) => {
@@ -29,7 +29,7 @@ function ShiftSignupForm() {
           const q = query(
             collection(db, "shifts"),
             where("date", "==", formData.date),
-            where("block", "==", formData.length)
+            where("block", "==", formData.block)
           );
           const querySnapshot = await getDocs(q);
       
@@ -43,7 +43,7 @@ function ShiftSignupForm() {
             name: formData.name,
             phone: formData.phone,
             date: formData.date,
-            block: formData.length,
+            block: formData.block,
             timestamp: Date.now(),
           });
       
@@ -52,7 +52,7 @@ function ShiftSignupForm() {
             name: "",
             phone: "",
             date: "",
-            length: "6am-12pm"
+            block: "6am-12pm"
           });
         } catch (err) {
             console.error("Error adding shift:", err.message);
@@ -83,7 +83,7 @@ function ShiftSignupForm() {
             <input type="date" name="date" value={formData.date} onChange={handleChange} required />
 
             <label htmlFor="shiftBlock">Choose Shift:</label>            
-                <select name="length" value={formData.length} onChange={handleChange}>
+                <select name="block" value={formData.block} onChange={handleChange}>
                     <option value="12pm-6pm" >6:00 am to 6:00 pm</option>
                     <option value="6am-12pm">6:00 am to 12:00 pm</option>
                     <option value="12pm-6pm">12:00 pm to 6:00 pm</option>                  
