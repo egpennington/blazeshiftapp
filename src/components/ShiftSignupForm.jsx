@@ -2,8 +2,8 @@ import React from 'react'
 import { useState } from "react"
 import { db } from "../firebase";
 import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
-
-
+import { getFunctions, httpsCallable } from "firebase/functions";
+import { functions } from "../firebase";
 
 function ShiftSignupForm() {
     const [formData, setFormData] = useState({
@@ -52,6 +52,14 @@ function ShiftSignupForm() {
             block: formData.block.trim().toLowerCase(),
             timestamp: Date.now()
           });
+
+          // Send SMS Confirmation
+          await sendConfirmation({
+            phone: formData.phone,
+            name: formData.name,
+            date: formData.date.trim(),
+            shiftBlock: formData.block.trim().toLowerCase()
+          });
       
           alert("Shift signup successful!");
       
@@ -80,6 +88,7 @@ function ShiftSignupForm() {
     }
 
     return (
+      <>
         <form onSubmit={handleSubmit} className="form">
             <h2>Shift Signup</h2>
 
@@ -102,8 +111,32 @@ function ShiftSignupForm() {
             <button type="button" className="cancelBtn" onClick={handleCancel}>Cancel</button>
             <button type="submit">Sign Up</button>
         </form>
-    )
-    
+        <footer className="footer">PenningtonProgramming &copy; 2025</footer>
+      </>
+        
+    )    
 }
+
+const sendConfirmation = async ({ phone, name, date, shiftBlock }) => {
+  // const functions = getFunctions(app);
+  const sendSMS = httpsCallable(functions, "sendConfirmationSMS");
+
+  try {
+    const result = await sendSMS({
+      to: phone,
+      name,
+      date,
+      shiftBlock
+    });
+
+    if (result.data.success) {
+      console.log("✅ SMS sent!", result.data.sid);
+    } else {
+      console.error("❌ SMS error:", result.data.error);
+    }
+  } catch (error) {
+    console.error("❌ SMS failed to send:", error.message);
+  }
+};
 
 export default ShiftSignupForm
