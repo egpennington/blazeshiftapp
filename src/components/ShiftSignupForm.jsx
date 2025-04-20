@@ -79,7 +79,7 @@ function ShiftSignupForm() {
               date: formData.date
             }),
             headers: {
-              "Current-Type": "application/json"
+              "Content-Type": "application/json"
             }
           })
       
