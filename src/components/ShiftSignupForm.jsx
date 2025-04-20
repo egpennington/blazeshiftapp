@@ -1,11 +1,14 @@
 import React from 'react'
 import { useState } from "react"
 import { db, functions } from "../firebase";
-
-
 import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 import { getFunctions, httpsCallable } from "firebase/functions";
 import { app } from "../firebase";
+
+import { messaging } from "../firebase";
+import { getToken } from "firebase/messaging";
+
+const vapidKey = "BCGNce0TKYPnWXcRL_ZMxvk_UkZE1eJ27_I02-xq8c9JTj3Vgoslza3-iLnbMgn6f1f1p3Ufhle5CI00UJmaE30"; // got this from project settings>cloudmessaging>webpushcert>keypair
 
 
 function ShiftSignupForm() {
@@ -13,7 +16,7 @@ function ShiftSignupForm() {
         name: "",
         phone: "",
         date: "",
-        block: "6am-6pm" // full day default
+        block: "6am-6pm" // full day for default
     })
 
     const handleChange = (e) => {
@@ -46,6 +49,16 @@ function ShiftSignupForm() {
             alert("This shift is already full.");
             return;
           }
+
+          const vapidKey = "BCGNce0TKYPnWXcRL_ZMxvk_UkZE1eJ27_I02-xq8c9JTj3Vgoslza3-iLnbMgn6f1f1p3Ufhle5CI00UJmaE30"; // this is my FCM key
+
+          const fcmToken = await getToken(messaging, { vapidKey });
+
+          if (!fcmToken) {
+            console.warn("❌ No FCM token available.");
+          } else {
+            console.log("📲 FCM Token:", fcmToken);
+          }
       
           // Add new shift to Firestore
           await addDoc(collection(db, "shifts"), {
@@ -53,12 +66,13 @@ function ShiftSignupForm() {
             phone: formData.phone,
             date: formData.date.trim(),
             block: formData.block.trim().toLowerCase(),
+            token: fcmToken || "no-token",
             timestamp: Date.now()
           });
       
           alert("Shift signup successful!");
       
-          // Reset the form
+          // Reset form
           setFormData({
             name: "",
             phone: "",
@@ -70,8 +84,7 @@ function ShiftSignupForm() {
           console.error("Error adding shift:", err.message);
           alert("Something went wrong. Check the console.");
         }
-      };
-      
+      };      
 
     const handleCancel = () => {
         setFormData({
@@ -107,30 +120,8 @@ function ShiftSignupForm() {
             <button type="submit">Sign Up</button>
         </form>
         <footer className="footer">PenningtonProgramming &copy; 2025</footer>
-      </>
-        
+      </>        
     )    
 }
 
-const sendConfirmation = async ({ phone, name, date, shiftBlock }) => {
-  const sendSMS = httpsCallable(functions, "sendConfirmationSMS");
-  
-
-  try {
-    const result = await sendSMS({
-      to: phone,
-      name,
-      date,
-      shiftBlock
-    });
-
-    if (result.data.success) {
-      console.log("✅ SMS sent!", result.data.sid);
-    } else {
-      console.error("❌ SMS error:", result.data.error);
-    }
-  } catch (error) {
-    console.error("❌ SMS failed to send:", error.message);
-  }
-};
 export default ShiftSignupForm
