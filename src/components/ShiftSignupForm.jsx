@@ -1,9 +1,12 @@
 import React from 'react'
 import { useState } from "react"
-import { db } from "../firebase";
+import { db, functions } from "../firebase";
+
+
 import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 import { getFunctions, httpsCallable } from "firebase/functions";
-import { functions } from "../firebase";
+import { app } from "../firebase";
+
 
 function ShiftSignupForm() {
     const [formData, setFormData] = useState({
@@ -118,8 +121,8 @@ function ShiftSignupForm() {
 }
 
 const sendConfirmation = async ({ phone, name, date, shiftBlock }) => {
-  // const functions = getFunctions(app);
   const sendSMS = httpsCallable(functions, "sendConfirmationSMS");
+  
 
   try {
     const result = await sendSMS({
@@ -138,5 +141,4 @@ const sendConfirmation = async ({ phone, name, date, shiftBlock }) => {
     console.error("❌ SMS failed to send:", error.message);
   }
 };
-
 export default ShiftSignupForm
