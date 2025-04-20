@@ -69,6 +69,19 @@ function ShiftSignupForm() {
             token: fcmToken || "no-token",
             timestamp: Date.now()
           });
+
+          await fetch("https://us-central1-blazeshiftapp.cloudfunctions.net/sendPush", {
+            method: "POST",
+            body: JSON.stringify({
+              token: fcmToken,
+              name: formData.name,
+              block: formData.block,
+              date: formData.date
+            }),
+            headers: {
+              "Current-Type": "application/json"
+            }
+          })
       
           alert("Shift signup successful!");
       
