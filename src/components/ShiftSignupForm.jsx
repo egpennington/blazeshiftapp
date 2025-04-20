@@ -55,14 +55,6 @@ function ShiftSignupForm() {
             block: formData.block.trim().toLowerCase(),
             timestamp: Date.now()
           });
-
-          // Send SMS Confirmation
-          await sendConfirmation({
-            phone: formData.phone,
-            name: formData.name,
-            date: formData.date.trim(),
-            shiftBlock: formData.block.trim().toLowerCase()
-          });
       
           alert("Shift signup successful!");
       
