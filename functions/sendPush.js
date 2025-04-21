@@ -41,7 +41,7 @@ exports.sendPush = functions.https.onRequest(async (req, res) => {
       };
 
       console.log("📡 Sending to FCM URL:", `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`);
-
+      
       const response = await fetch(`https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`, {
           method: "POST",
           headers: {
