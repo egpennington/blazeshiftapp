@@ -6,7 +6,7 @@ import { getFunctions, httpsCallable } from "firebase/functions";
 import { app } from "../firebase";
 
 import { messaging } from "../firebase";
-import { getToken } from "firebase/messaging";
+import { getToken, deleteToken } from "firebase/messaging";
 
 const vapidKey = "BCGNce0TKYPnWXcRL_ZMxvk_UkZE1eJ27_I02-xq8c9JTj3Vgoslza3-iLnbMgn6f1f1p3Ufhle5CI00UJmaE30"; // got this from project settings>cloudmessaging>webpushcert>keypair
 
@@ -53,6 +53,7 @@ function ShiftSignupForm() {
           const vapidKey = "BCGNce0TKYPnWXcRL_ZMxvk_UkZE1eJ27_I02-xq8c9JTj3Vgoslza3-iLnbMgn6f1f1p3Ufhle5CI00UJmaE30"; // this is my FCM key
 
           const fcmToken = await getToken(messaging, { vapidKey });
+          console.log("🚀 Sending push with token:", fcmToken);
 
           if (!fcmToken) {
             console.warn("❌ No FCM token available.");
@@ -70,6 +71,7 @@ function ShiftSignupForm() {
             timestamp: Date.now()
           });
 
+          console.log("🔍 Token about to send to cloud function:", fcmToken);
           await fetch("https://us-central1-blazeshiftapp.cloudfunctions.net/sendPush", {
             method: "POST",
             body: JSON.stringify({
