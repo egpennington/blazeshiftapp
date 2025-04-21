@@ -3,7 +3,7 @@ const functions = require("firebase-functions");
 const { google } = require("googleapis");
 const cors = require("cors")({ origin: true });
 const admin = require("firebase-admin");
-const fetch = require("node-fetch"); // ✅ bring in node-fetch for compatibility
+const fetch = require("node-fetch");
 
 admin.initializeApp();
 
