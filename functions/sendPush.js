@@ -25,7 +25,6 @@ exports.sendPush = functions.https.onRequest(async (req, res) => {
       const accessToken = await auth.getAccessToken();
       const projectId = "blazeshiftapp"; // actual Firebase project ID
 
-
       const message = {
         message: {
           token,
@@ -40,6 +39,9 @@ exports.sendPush = functions.https.onRequest(async (req, res) => {
           }
         }
       };
+
+      console.log("📡 Sending to FCM URL:", `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`);
+
       const response = await fetch(`https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`, {
           method: "POST",
           headers: {
